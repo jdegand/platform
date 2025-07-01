@@ -25,7 +25,7 @@ describe('migrate tapResponse', () => {
     );
 
     const actual = tree.readContent('main.ts');
-    expect(actual).toStrictEqual(output);
+    expect(actual).toBe(output);
   };
 
   it('should migrate basic tapResponse signature', async () => {
