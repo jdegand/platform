@@ -5,6 +5,8 @@ import {
 } from '@angular-devkit/schematics/testing';
 import { createWorkspace } from '@ngrx/schematics-core/testing';
 import { tags } from '@angular-devkit/core';
+import { visitCallExpression } from '@ngrx/schematics-core/utility/visitors';
+import * as ts from 'typescript';
 
 describe('migrate tapResponse', () => {
   const collectionPath = path.join(__dirname, '../migration.json');
@@ -86,5 +88,41 @@ operators.tapResponse({ next: () => next, error: () => error, complete: () => co
     `;
 
     await verifySchematic(input, output);
+  });
+
+  it('should identify all call expressions including aliases and namespace calls', () => {
+    const code = tags.stripIndent`
+    import { tapResponse } from '@ngrx/component';
+    import * as operators from '@ngrx/component';
+
+    const myTapResponse = tapResponse;
+    const anotherAlias = operators;
+
+    tapResponse(() => {}, () => {});
+    myTapResponse(() => {}, () => {});
+    anotherAlias.tapResponse(() => {}, () => {});
+  `;
+
+    const sourceFile = ts.createSourceFile(
+      'test.ts',
+      code,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS
+    );
+
+    const foundCalls: ts.CallExpression[] = [];
+
+    visitCallExpression(sourceFile, (node) => {
+      foundCalls.push(node);
+    });
+
+    expect(foundCalls.length).toBe(3);
+
+    const callTexts = foundCalls.map((call) => call.getText());
+
+    expect(callTexts).toContain('tapResponse(() => {}, () => {})');
+    expect(callTexts).toContain('myTapResponse(() => {}, () => {})');
+    expect(callTexts).toContain('anotherAlias.tapResponse(() => {}, () => {})');
   });
 });
