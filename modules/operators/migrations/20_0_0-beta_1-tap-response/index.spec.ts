@@ -7,6 +7,7 @@ import { createWorkspace } from '@ngrx/schematics-core/testing';
 import { tags } from '@angular-devkit/core';
 import { visitCallExpression } from '@ngrx/schematics-core/utility/visitors';
 import * as ts from 'typescript';
+import * as prettier from 'prettier';
 
 describe('migrate tapResponse', () => {
   const collectionPath = path.join(__dirname, '../migration.json');
@@ -26,21 +27,31 @@ describe('migrate tapResponse', () => {
       appTree
     );
 
-    const actual = tree.readContent('main.ts');
-    expect(actual).toBe(output);
+    const actual = prettier.format(tree.readContent('main.ts'), {
+      parser: 'typescript',
+    });
+
+    expect(actual).toBe(
+      prettier.format(output, {
+        parser: 'typescript',
+      })
+    );
   };
 
   it('should migrate basic tapResponse signature', async () => {
     const input = tags.stripIndent`
-import { tapResponse } from '@ngrx/component';
+      import { tapResponse } from '@ngrx/component';
 
-tapResponse(() => {}, () => {});
+      tapResponse(() => {}, () => {});
     `;
 
     const output = tags.stripIndent`
-import { tapResponse } from '@ngrx/component';
+      import { tapResponse } from '@ngrx/component';
 
-tapResponse({ next: () => {}, error: () => {} });
+      tapResponse({
+        next: () => {},
+        error: () => {}
+      });
     `;
 
     await verifySchematic(input, output);
@@ -48,11 +59,15 @@ tapResponse({ next: () => {}, error: () => {} });
 
   it('should migrate tapResponse with complete callback', async () => {
     const input = tags.stripIndent`
-tapResponse(() => next, () => error, () => complete);
+      tapResponse(() => next, () => error, () => complete);
     `;
 
     const output = tags.stripIndent`
-tapResponse({ next: () => next, error: () => error, complete: () => complete });
+      tapResponse({
+        next: () => next,
+        error: () => error,
+        complete: () => complete
+      });
     `;
 
     await verifySchematic(input, output);
@@ -60,15 +75,18 @@ tapResponse({ next: () => next, error: () => error, complete: () => complete });
 
   it('should migrate aliased tapResponse calls', async () => {
     const input = tags.stripIndent`
-const myTapResponse = tapResponse;
+      const myTapResponse = tapResponse;
 
-myTapResponse(() => next, () => error);
+      myTapResponse(() => next, () => error);
     `;
 
     const output = tags.stripIndent`
-const myTapResponse = tapResponse;
+      const myTapResponse = tapResponse;
 
-myTapResponse({ next: () => next, error: () => error });
+      myTapResponse({
+        next: () => next,
+        error: () => error
+      });
     `;
 
     await verifySchematic(input, output);
@@ -76,15 +94,19 @@ myTapResponse({ next: () => next, error: () => error });
 
   it('should migrate namespaced tapResponse calls', async () => {
     const input = tags.stripIndent`
-import * as operators from '@ngrx/component';
+      import * as operators from '@ngrx/component';
 
-operators.tapResponse(() => next, () => error, () => complete);
+      operators.tapResponse(() => next, () => error, () => complete);
     `;
 
     const output = tags.stripIndent`
-import * as operators from '@ngrx/component';
+      import * as operators from '@ngrx/component';
 
-operators.tapResponse({ next: () => next, error: () => error, complete: () => complete });
+      operators.tapResponse({
+        next: () => next,
+        error: () => error,
+        complete: () => complete
+      });
     `;
 
     await verifySchematic(input, output);
@@ -92,16 +114,16 @@ operators.tapResponse({ next: () => next, error: () => error, complete: () => co
 
   it('should identify all call expressions including aliases and namespace calls', () => {
     const code = tags.stripIndent`
-    import { tapResponse } from '@ngrx/component';
-    import * as operators from '@ngrx/component';
+      import { tapResponse } from '@ngrx/component';
+      import * as operators from '@ngrx/component';
 
-    const myTapResponse = tapResponse;
-    const anotherAlias = operators;
+      const myTapResponse = tapResponse;
+      const anotherAlias = operators;
 
-    tapResponse(() => {}, () => {});
-    myTapResponse(() => {}, () => {});
-    anotherAlias.tapResponse(() => {}, () => {});
-  `;
+      tapResponse(() => {}, () => {});
+      myTapResponse(() => {}, () => {});
+      anotherAlias.tapResponse(() => {}, () => {});
+    `;
 
     const sourceFile = ts.createSourceFile(
       'test.ts',

@@ -6,12 +6,13 @@ import {
   Change,
 } from '@ngrx/component/schematics-core';
 import { visitCallExpression } from '@ngrx/schematics-core/utility/visitors';
-import ts = require('typescript');
+import * as ts from 'typescript';
 
 export default function migrateTapResponse(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     visitTSSourceFiles(tree, (sourceFile) => {
       const changes: Change[] = [];
+      const visited = new Set<number>();
       const tapResponseIdentifiers = new Set(['tapResponse']);
 
       // Track aliases like: const myTapResponse = tapResponse;
@@ -30,11 +31,14 @@ export default function migrateTapResponse(): Rule {
         }
       });
 
+      const printer = ts.createPrinter();
+
       visitCallExpression(sourceFile, (node) => {
         const { expression, arguments: args } = node;
 
-        // Always preserve original call expression text (e.g. operators.tapResponse or myTapResponse)
-        const callText = expression.getText();
+        // Avoid duplicates by tracking position
+        if (visited.has(node.getStart())) return;
+        visited.add(node.getStart());
 
         let fnName = '';
         if (ts.isIdentifier(expression)) {
@@ -45,19 +49,33 @@ export default function migrateTapResponse(): Rule {
 
         if (
           tapResponseIdentifiers.has(fnName) &&
-          args.length >= 2 &&
-          args.length <= 3
+          (args.length === 2 || args.length === 3) &&
+          args.every(
+            (arg) => ts.isArrowFunction(arg) || ts.isFunctionExpression(arg)
+          )
         ) {
-          const observerProps = [
-            `next: ${args[0].getText()}`,
-            `error: ${args[1].getText()}`,
+          const props: ts.PropertyAssignment[] = [
+            ts.factory.createPropertyAssignment('next', args[0]),
+            ts.factory.createPropertyAssignment('error', args[1]),
           ];
 
           if (args[2]) {
-            observerProps.push(`complete: ${args[2].getText()}`);
+            props.push(
+              ts.factory.createPropertyAssignment('complete', args[2])
+            );
           }
 
-          const newText = `${callText}({ ${observerProps.join(', ')} })`;
+          const newCall = ts.factory.createCallExpression(
+            expression,
+            undefined,
+            [ts.factory.createObjectLiteralExpression(props, true)]
+          );
+
+          const newText = printer.printNode(
+            ts.EmitHint.Expression,
+            newCall,
+            sourceFile
+          );
 
           changes.push(
             createReplaceChange(sourceFile, node, node.getText(), newText)
@@ -67,7 +85,7 @@ export default function migrateTapResponse(): Rule {
 
       if (changes.length) {
         commitChanges(tree, sourceFile.fileName, changes);
-        context.logger.info(
+        context.logger.debug(
           `[rxjs] Migrated deprecated tapResponse in ${sourceFile.fileName}`
         );
       }
