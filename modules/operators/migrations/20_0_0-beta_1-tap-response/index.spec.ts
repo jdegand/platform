@@ -57,7 +57,6 @@ tapResponse({ next: () => next, error: () => error, complete: () => complete });
   });
 
   it('should migrate aliased tapResponse calls', async () => {
-    // this fails
     const input = tags.stripIndent`
 const myTapResponse = tapResponse;
 
