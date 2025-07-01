@@ -3,14 +3,16 @@ import {
   visitTSSourceFiles,
   createReplaceChange,
   commitChanges,
+  Change,
 } from '@ngrx/component/schematics-core';
 import { visitCallExpression } from '@ngrx/schematics-core/utility/visitors';
+
 import ts = require('typescript');
 
 export default function migrateTapResponse(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     visitTSSourceFiles(tree, (sourceFile) => {
-      const changes: any[] = [];
+      const changes: Change[] = [];
 
       visitCallExpression(sourceFile, (node) => {
         const { expression, arguments: args } = node;

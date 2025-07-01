@@ -19,7 +19,7 @@ describe('migrate tapResponse', () => {
     appTree.create('main.ts', input);
 
     const tree = await schematicRunner.runSchematic(
-      `tap-response-observer`,
+      `20.0.0-beta_1-tap-response`,
       {},
       appTree
     );
