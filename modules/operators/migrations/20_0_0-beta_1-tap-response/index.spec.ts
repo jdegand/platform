@@ -19,13 +19,13 @@ describe('migrate tapResponse', () => {
     appTree.create('main.ts', input);
 
     const tree = await schematicRunner.runSchematic(
-      `20.0.0-beta_1-tap-response`,
+      '20.0.0-beta_1-tap-response',
       {},
       appTree
     );
 
     const actual = tree.readContent('main.ts');
-    expect(actual).toBe(output);
+    expect(actual).toStrictEqual(output);
   };
 
   it('should migrate basic tapResponse signature', async () => {
@@ -57,6 +57,7 @@ tapResponse({ next: () => next, error: () => error, complete: () => complete });
   });
 
   it('should migrate aliased tapResponse calls', async () => {
+    // this fails
     const input = tags.stripIndent`
 const myTapResponse = tapResponse;
 
