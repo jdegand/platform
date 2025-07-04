@@ -35,7 +35,7 @@ describe('migrate tapResponse', () => {
 tapResponse(() => {}, () => {});
 `;
 
-    const output = `import { tapResponse } from '@ngrx/component';
+    const output = `import { tapResponse } from '@ngrx/operators';
 tapResponse({
     next: () => { },
     error: () => { }
@@ -75,11 +75,11 @@ myTapResponse({
   });
 
   it('migrates namespaced tapResponse calls', async () => {
-    const input = `import * as operators from '@ngrx/component';
+    const input = `import * as operators from '@ngrx/operators';
 operators.tapResponse(() => next, () => error, () => complete);
 `;
 
-    const output = `import * as operators from '@ngrx/component';
+    const output = `import * as operators from '@ngrx/operators';
 operators.tapResponse({
     next: () => next,
     error: () => error,
@@ -90,10 +90,23 @@ operators.tapResponse({
     await verifySchematic(input, output);
   });
 
+  it('skips tapResponse if not imported from @ngrx/operators', async () => {
+    const input = `import { tapResponse } from '@ngrx/operators';
+tapResponse(() => {}, () => {});
+`;
+
+    // Expect NO transformation
+    const output = `import { tapResponse } from '@ngrx/operators';
+tapResponse(() => {}, () => {});
+`;
+
+    await verifySchematic(input, output);
+  });
+
   it('identify all call expressions including aliases and namespace calls', () => {
     const code = tags.stripIndent`
-      import { tapResponse } from '@ngrx/component';
-      import * as operators from '@ngrx/component';
+      import { tapResponse } from '@ngrx/operators';
+      import * as operators from '@ngrx/operators';
       const myTapResponse = tapResponse;
       const anotherAlias = operators;
       tapResponse(() => {}, () => {});
