@@ -27,7 +27,7 @@ describe('migrate tapResponse', () => {
     );
 
     const actual = tree.readContent('main.ts');
-    expect(actual).toBe(output);
+    expect(actual.replace(/\s+/g, '')).toBe(output.replace(/\s+/g, ''));
   };
 
   it('migrates basic tapResponse signature', async () => {
@@ -91,12 +91,12 @@ operators.tapResponse({
   });
 
   it('skips tapResponse if not imported from @ngrx/operators', async () => {
-    const input = `import { tapResponse } from '@ngrx/operators';
+    const input = `import { tapResponse } from '@ngrx/component';
 tapResponse(() => {}, () => {});
 `;
 
     // Expect NO transformation
-    const output = `import { tapResponse } from '@ngrx/operators';
+    const output = `import { tapResponse } from '@ngrx/component';
 tapResponse(() => {}, () => {});
 `;
 

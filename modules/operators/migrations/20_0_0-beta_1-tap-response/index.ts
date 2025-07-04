@@ -19,7 +19,7 @@ export default function migrateTapResponse(): Rule {
 
       // Collect import origins and aliases
       ts.forEachChild(sourceFile, (node: ts.Node) => {
-        // 1. Named imports from @ngrx/operators
+        // 1. Named or namespace imports from @ngrx/operators
         if (
           ts.isImportDeclaration(node) &&
           ts.isStringLiteral(node.moduleSpecifier) &&
@@ -30,15 +30,14 @@ export default function migrateTapResponse(): Rule {
 
           if (ts.isNamedImports(bindings)) {
             for (const element of bindings.elements) {
-              const name = element.name.text;
-              tapResponseIdentifiers.add(name);
+              tapResponseIdentifiers.add(element.name.text);
             }
           } else if (ts.isNamespaceImport(bindings)) {
             namespaceImportsFromOperators.add(bindings.name.text);
           }
         }
 
-        // 2. Aliases assigned to known identifiers
+        // 2. Aliased identifiers like: const alias = tapResponse;
         if (ts.isVariableStatement(node)) {
           for (const decl of node.declarationList.declarations) {
             if (
@@ -56,7 +55,6 @@ export default function migrateTapResponse(): Rule {
       visitCallExpression(sourceFile, (node: ts.CallExpression) => {
         const { expression, arguments: args } = node;
 
-        // Identify function name
         let fnName = '';
         let isDirect = false;
         let isNamespaced = false;
@@ -72,7 +70,6 @@ export default function migrateTapResponse(): Rule {
             namespaceImportsFromOperators.has(namespace);
         }
 
-        // Only apply if valid source and argument shape
         if (
           (isDirect || isNamespaced) &&
           (args.length === 2 || args.length === 3) &&
@@ -91,9 +88,10 @@ export default function migrateTapResponse(): Rule {
             );
           }
 
-          const newCall = ts.factory.createCallExpression(
+          const newCall = ts.factory.updateCallExpression(
+            node,
             expression,
-            undefined,
+            node.typeArguments,
             [ts.factory.createObjectLiteralExpression(props, true)]
           );
 
