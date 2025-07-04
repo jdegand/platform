@@ -162,6 +162,20 @@ function handle() {
     await verifySchematic(input, output);
   });
 
+  it('should NOT migrate tapResponse imported from another module', async () => {
+    const input = `
+    import { tapResponse } from 'some-other-lib';
+    const obs = tapResponse(
+      (value) => console.log(value),
+      (error) => console.error(error)
+    );
+  `;
+
+    const output = input; // Should remain unchanged
+
+    await verifySchematic(input, output);
+  });
+
   it('identify all call expressions including aliases and namespace calls', () => {
     const code = tags.stripIndent`
       import { tapResponse } from '@ngrx/operators';
