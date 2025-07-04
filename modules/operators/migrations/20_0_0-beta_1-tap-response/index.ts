@@ -10,15 +10,15 @@ import * as ts from 'typescript';
 
 export default function migrateTapResponse(): Rule {
   return (tree: Tree, context: SchematicContext) => {
-    visitTSSourceFiles(tree, (sourceFile) => {
+    visitTSSourceFiles(tree, (sourceFile: ts.SourceFile) => {
       const changes: Change[] = [];
       const visited = new Set<number>();
-      const tapResponseIdentifiers = new Set(['tapResponse']);
+      const tapResponseIdentifiers = new Set<string>(['tapResponse']);
 
       // Track aliases like: const myTapResponse = tapResponse;
-      ts.forEachChild(sourceFile, (node) => {
+      ts.forEachChild(sourceFile, (node: ts.Node) => {
         if (ts.isVariableStatement(node)) {
-          node.declarationList.declarations.forEach((decl) => {
+          for (const decl of node.declarationList.declarations) {
             if (
               ts.isIdentifier(decl.name) &&
               decl.initializer &&
@@ -27,13 +27,13 @@ export default function migrateTapResponse(): Rule {
             ) {
               tapResponseIdentifiers.add(decl.name.text);
             }
-          });
+          }
         }
       });
 
       const printer = ts.createPrinter();
 
-      visitCallExpression(sourceFile, (node) => {
+      visitCallExpression(sourceFile, (node: ts.CallExpression) => {
         const { expression, arguments: args } = node;
 
         // Avoid duplicates by tracking position
@@ -85,8 +85,8 @@ export default function migrateTapResponse(): Rule {
 
       if (changes.length) {
         commitChanges(tree, sourceFile.fileName, changes);
-        context.logger.debug(
-          `[rxjs] Migrated deprecated tapResponse in ${sourceFile.fileName}`
+        context.logger.info(
+          `[ngrx/operators] Migrated deprecated tapResponse in ${sourceFile.fileName}`
         );
       }
     });
