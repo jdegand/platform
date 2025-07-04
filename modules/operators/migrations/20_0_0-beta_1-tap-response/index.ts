@@ -16,10 +16,10 @@ export default function migrateTapResponse(): Rule {
 
       const tapResponseIdentifiers = new Set<string>();
       const namespaceImportsFromOperators = new Set<string>();
+      const aliasedTapResponseVariables = new Set<string>();
 
       // Collect import origins and aliases
       ts.forEachChild(sourceFile, (node: ts.Node) => {
-        // 1. Named or namespace imports from @ngrx/operators
         if (
           ts.isImportDeclaration(node) &&
           ts.isStringLiteral(node.moduleSpecifier) &&
@@ -37,7 +37,7 @@ export default function migrateTapResponse(): Rule {
           }
         }
 
-        // 2. Aliased identifiers like: const alias = tapResponse;
+        // Track variables assigned to known tapResponse identifiers
         if (ts.isVariableStatement(node)) {
           for (const decl of node.declarationList.declarations) {
             if (
@@ -46,32 +46,39 @@ export default function migrateTapResponse(): Rule {
               ts.isIdentifier(decl.initializer) &&
               tapResponseIdentifiers.has(decl.initializer.text)
             ) {
-              tapResponseIdentifiers.add(decl.name.text);
+              aliasedTapResponseVariables.add(decl.name.text);
             }
           }
         }
       });
 
+      // Combine aliases into the main set
+      for (const alias of aliasedTapResponseVariables) {
+        tapResponseIdentifiers.add(alias);
+      }
+
       visitCallExpression(sourceFile, (node: ts.CallExpression) => {
         const { expression, arguments: args } = node;
 
-        let fnName = '';
-        let isDirect = false;
-        let isNamespaced = false;
+        let isTapResponseCall = false;
 
         if (ts.isIdentifier(expression)) {
-          fnName = expression.text;
-          isDirect = tapResponseIdentifiers.has(fnName);
+          if (tapResponseIdentifiers.has(expression.text)) {
+            isTapResponseCall = true;
+          }
         } else if (ts.isPropertyAccessExpression(expression)) {
           const namespace = expression.expression.getText();
-          fnName = expression.name.text;
-          isNamespaced =
+          const fnName = expression.name.text;
+          if (
             fnName === 'tapResponse' &&
-            namespaceImportsFromOperators.has(namespace);
+            namespaceImportsFromOperators.has(namespace)
+          ) {
+            isTapResponseCall = true;
+          }
         }
 
         if (
-          (isDirect || isNamespaced) &&
+          isTapResponseCall &&
           (args.length === 2 || args.length === 3) &&
           args.every(
             (arg) => ts.isArrowFunction(arg) || ts.isFunctionExpression(arg)

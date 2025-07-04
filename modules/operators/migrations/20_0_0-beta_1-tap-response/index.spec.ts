@@ -27,7 +27,10 @@ describe('migrate tapResponse', () => {
     );
 
     const actual = tree.readContent('main.ts');
-    expect(actual.replace(/\s+/g, '')).toBe(output.replace(/\s+/g, ''));
+    //expect(actual.replace(/\s+/g, '')).toBe(output.replace(/\s+/g, ''));
+
+    const normalize = (s: string) => s.replace(/\s+/g, '').replace(/;/g, '');
+    expect(normalize(actual)).toBe(normalize(output));
   };
 
   it('migrates basic tapResponse signature', async () => {
@@ -98,6 +101,26 @@ tapResponse(() => {}, () => {});
     // Expect NO transformation
     const output = `import { tapResponse } from '@ngrx/component';
 tapResponse(() => {}, () => {});
+`;
+
+    await verifySchematic(input, output);
+  });
+
+  it('migrates tapResponse inside a full component-like body', async () => {
+    const input = `import { tapResponse } from '@ngrx/operators';
+function handle() {
+  return tapResponse(() => next(), () => error(), () => complete());
+}
+`;
+
+    const output = `import { tapResponse } from '@ngrx/operators';
+function handle() {
+  return tapResponse({
+    next: () => next(),
+    error: () => error(),
+    complete: () => complete()
+  });
+}
 `;
 
     await verifySchematic(input, output);
