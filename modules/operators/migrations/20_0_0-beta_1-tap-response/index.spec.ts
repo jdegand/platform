@@ -27,7 +27,6 @@ describe('migrate tapResponse', () => {
     );
 
     const actual = tree.readContent('main.ts');
-    //expect(actual.replace(/\s+/g, '')).toBe(output.replace(/\s+/g, ''));
 
     const normalize = (s: string) => s.replace(/\s+/g, '').replace(/;/g, '');
     expect(normalize(actual)).toBe(normalize(output));
@@ -49,30 +48,45 @@ tapResponse({
   });
 
   it('migrates tapResponse with complete callback', async () => {
-    const input = `tapResponse(() => next, () => error, () => complete);
-`;
+    const input = `
+    import { tapResponse } from '@ngrx/operators';
+    tapResponse(
+      () => next,
+      () => error,
+      () => complete
+    );
+  `;
 
-    const output = `tapResponse({
-    next: () => next,
-    error: () => error,
-    complete: () => complete
-});
-`;
+    const output = `
+    import { tapResponse } from '@ngrx/operators';
+    tapResponse({
+      next: () => next,
+      error: () => error,
+      complete: () => complete
+    });
+  `;
 
     await verifySchematic(input, output);
   });
 
   it('migrates aliased tapResponse calls', async () => {
-    const input = `const myTapResponse = tapResponse;
-myTapResponse(() => next, () => error);
-`;
+    const input = `
+    import { tapResponse } from '@ngrx/operators';
+    const myTapResponse = tapResponse;
+    myTapResponse(
+      () => next,
+      () => error
+    );
+  `;
 
-    const output = `const myTapResponse = tapResponse;
-myTapResponse({
-    next: () => next,
-    error: () => error
-});
-`;
+    const output = `
+    import { tapResponse } from '@ngrx/operators';
+    const myTapResponse = tapResponse;
+    myTapResponse({
+      next: () => next,
+      error: () => error
+    });
+  `;
 
     await verifySchematic(input, output);
   });
