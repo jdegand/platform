@@ -1,13 +1,21 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  input,
+  untracked,
+  effect,
+  output,
+} from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Credentials } from '@example-app/auth/models';
-import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
-import { MatFormField, MatInput } from '@angular/material/input';
-import { NgIf } from '@angular/common';
-import { MatButton } from '@angular/material/button';
+import { MaterialModule } from '@example-app/material';
 
 @Component({
+  standalone: true,
   selector: 'bc-login-form',
+  imports: [MaterialModule, ReactiveFormsModule],
   template: `
     <mat-card>
       <mat-card-title>Login</mat-card-title>
@@ -20,6 +28,7 @@ import { MatButton } from '@angular/material/button';
                 matInput
                 placeholder="Username"
                 formControlName="username"
+                data-testid="username"
               />
             </mat-form-field>
           </p>
@@ -31,13 +40,16 @@ import { MatButton } from '@angular/material/button';
                 matInput
                 placeholder="Password"
                 formControlName="password"
+                data-testid="password"
               />
             </mat-form-field>
           </p>
 
-          <p *ngIf="errorMessage" class="login-error">
-            {{ errorMessage }}
+          @if (errorMessage()) {
+          <p class="login-error">
+            {{ errorMessage() }}
           </p>
+          }
 
           <div class="login-buttons">
             <button type="submit" mat-button>Login</button>
@@ -82,32 +94,21 @@ import { MatButton } from '@angular/material/button';
       }
     `,
   ],
-  imports: [
-    MatCard,
-    MatCardTitle,
-    MatCardContent,
-    ReactiveFormsModule,
-    MatFormField,
-    MatInput,
-    NgIf,
-    MatButton,
-  ],
 })
 export class LoginFormComponent {
-  @Input()
-  set pending(isPending: boolean) {
-    if (isPending) {
-      this.form.disable();
-    } else {
-      this.form.enable();
-    }
-  }
+  readonly pending = input.required<boolean>();
 
-  @Input() errorMessage!: string | null;
+  private readonly pendingEffect = effect(() => {
+    const pending = this.pending();
 
-  @Output() submitted = new EventEmitter<Credentials>();
+    untracked(() => (pending ? this.form.disable() : this.form.enable()));
+  });
 
-  form: FormGroup = new FormGroup({
+  readonly errorMessage = input<string | null>(null);
+
+  submitted = output<Credentials>();
+
+  protected readonly form: FormGroup = new FormGroup({
     username: new FormControl('ngrx'),
     password: new FormControl(''),
   });

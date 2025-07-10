@@ -67,6 +67,7 @@ export class CollectionEffects {
     )
   );
 
+  // inject?
   constructor(
     private actions$: Actions,
     private storageService: BookStorageService

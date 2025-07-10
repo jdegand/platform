@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { MatSidenavContainer } from '@angular/material/sidenav';
+import { MaterialModule } from '@example-app/material';
 
 @Component({
   selector: 'bc-layout',
+  imports: [MaterialModule],
   template: `
     <mat-sidenav-container fullscreen>
       <ng-content></ng-content>
@@ -15,6 +16,5 @@ import { MatSidenavContainer } from '@angular/material/sidenav';
       }
     `,
   ],
-  imports: [MatSidenavContainer],
 })
 export class LayoutComponent {}

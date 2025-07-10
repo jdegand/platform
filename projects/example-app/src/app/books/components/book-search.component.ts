@@ -1,16 +1,10 @@
-import { Component, Output, Input, EventEmitter } from '@angular/core';
-import {
-  MatCard,
-  MatCardTitle,
-  MatCardContent,
-  MatCardFooter,
-} from '@angular/material/card';
-import { MatFormField, MatInput } from '@angular/material/input';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { NgIf } from '@angular/common';
+import { Component, output, input } from '@angular/core';
+import { MaterialModule } from '@example-app/material';
 
 @Component({
+  standalone: true,
   selector: 'bc-book-search',
+  imports: [MaterialModule],
   template: `
     <mat-card>
       <mat-card-title>Find a Book</mat-card-title>
@@ -19,18 +13,20 @@ import { NgIf } from '@angular/common';
           <input
             matInput
             placeholder="Search for a book"
-            [value]="query"
+            [value]="query()"
             (keyup)="onSearch($event)"
           />
         </mat-form-field>
         <mat-spinner
-          [class.show]="searching"
+          [class.show]="searching()"
           [diameter]="30"
           [strokeWidth]="3"
         ></mat-spinner>
       </mat-card-content>
       <mat-card-footer>
-        <span *ngIf="error">{{ error }}</span>
+        @if (error()) {
+        <span>{{ error() }}</span>
+        }
       </mat-card-footer>
     </mat-card>
   `,
@@ -69,24 +65,14 @@ import { NgIf } from '@angular/common';
       }
     `,
   ],
-  imports: [
-    MatCard,
-    MatCardTitle,
-    MatCardContent,
-    MatFormField,
-    MatInput,
-    MatProgressSpinner,
-    MatCardFooter,
-    NgIf,
-  ],
 })
 export class BookSearchComponent {
-  @Input() query = '';
-  @Input() searching = false;
-  @Input() error = '';
-  @Output() searchBooks = new EventEmitter<string>();
+  readonly query = input('');
+  readonly searching = input(false);
+  readonly error = input('');
+  protected search = output<string>(); // this needs to be renamed
 
   onSearch(event: KeyboardEvent): void {
-    this.searchBooks.emit((event.target as HTMLInputElement).value);
+    this.search.emit((event.target as HTMLInputElement).value);
   }
 }

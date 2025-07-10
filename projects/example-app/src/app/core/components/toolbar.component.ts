@@ -1,10 +1,9 @@
-import { Component, Output, EventEmitter } from '@angular/core';
-import { MatToolbar } from '@angular/material/toolbar';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
+import { Component, output } from '@angular/core';
+import { MaterialModule } from '@example-app/material';
 
 @Component({
   selector: 'bc-toolbar',
+  imports: [MaterialModule],
   template: `
     <mat-toolbar color="primary">
       <button mat-icon-button (click)="openMenu.emit()" aria-label="menu">
@@ -13,8 +12,7 @@ import { MatIcon } from '@angular/material/icon';
       <ng-content></ng-content>
     </mat-toolbar>
   `,
-  imports: [MatToolbar, MatIconButton, MatIcon],
 })
 export class ToolbarComponent {
-  @Output() openMenu = new EventEmitter<void>();
+  openMenu = output<void>();
 }

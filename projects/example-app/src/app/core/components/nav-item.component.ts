@@ -1,21 +1,18 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import {
-  MatListItem,
-  MatListItemIcon,
-  MatListItemTitle,
-  MatListItemLine,
-} from '@angular/material/list';
+import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MatIcon } from '@angular/material/icon';
-import { NgIf } from '@angular/common';
+import { MaterialModule } from '@example-app/material';
 
 @Component({
+  standalone: true,
   selector: 'bc-nav-item',
+  imports: [MaterialModule, RouterLink],
   template: `
-    <a mat-list-item [routerLink]="routerLink" (click)="navigate.emit()">
-      <mat-icon matListItemIcon>{{ icon }}</mat-icon>
+    <a mat-list-item [routerLink]="routerLink()" (click)="navigate.emit()">
+      <mat-icon matListItemIcon>{{ icon() }}</mat-icon>
       <div matListItemTitle><ng-content></ng-content></div>
-      <div *ngIf="hint" matListItemLine>{{ hint }}</div>
+      @if (hint()) {
+      <div matListItemLine>{{ hint() }}</div>
+      }
     </a>
   `,
   styles: [
@@ -25,19 +22,11 @@ import { NgIf } from '@angular/common';
       }
     `,
   ],
-  imports: [
-    MatListItem,
-    RouterLink,
-    MatIcon,
-    MatListItemIcon,
-    MatListItemTitle,
-    NgIf,
-    MatListItemLine,
-  ],
 })
 export class NavItemComponent {
-  @Input() icon = '';
-  @Input() hint = '';
-  @Input() routerLink: string | any[] = '/';
-  @Output() navigate = new EventEmitter<void>();
+  icon = input(''); // typing?
+  hint = input('');
+  routerLink = input<string | unknown[]>('/');
+
+  navigate = output<void>();
 }

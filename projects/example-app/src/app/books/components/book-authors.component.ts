@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { Book } from '@example-app/books/models';
+import { Book } from '../../books/models/book';
 import { MatListSubheaderCssMatStyler } from '@angular/material/list';
 import { AddCommasPipe } from '@example-app/shared/pipes/add-commas.pipe';
 
