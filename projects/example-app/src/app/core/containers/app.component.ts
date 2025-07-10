@@ -6,6 +6,12 @@ import { AuthActions } from '@example-app/auth/actions/auth.actions';
 import * as fromAuth from '@example-app/auth/reducers';
 import * as fromRoot from '@example-app/reducers';
 import { LayoutActions } from '@example-app/core/actions/layout.actions';
+import { LayoutComponent } from '../components/layout.component';
+import { SidenavComponent } from '../components/sidenav.component';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { NavItemComponent } from '../components/nav-item.component';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { ToolbarComponent } from '../components/toolbar.component';
 
 @Component({
   selector: 'bc-app',
@@ -46,7 +52,16 @@ import { LayoutActions } from '@example-app/core/actions/layout.actions';
       <router-outlet></router-outlet>
     </bc-layout>
   `,
-  standalone: false,
+  imports: [
+    LayoutComponent,
+    SidenavComponent,
+    NgIf,
+    NavItemComponent,
+    RouterLink,
+    ToolbarComponent,
+    RouterOutlet,
+    AsyncPipe,
+  ],
 })
 export class AppComponent {
   showSidenav$: Observable<boolean>;

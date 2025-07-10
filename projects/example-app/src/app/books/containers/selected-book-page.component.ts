@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import { SelectedBookPageActions } from '@example-app/books/actions/selected-book-page.actions';
 import { Book } from '@example-app/books/models';
 import * as fromBooks from '@example-app/books/reducers';
+import { BookDetailComponent } from '../components/book-detail.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'bc-selected-book-page',
@@ -19,7 +21,7 @@ import * as fromBooks from '@example-app/books/reducers';
     >
     </bc-book-detail>
   `,
-  standalone: false,
+  imports: [BookDetailComponent, AsyncPipe],
 })
 export class SelectedBookPageComponent {
   book$: Observable<Book>;

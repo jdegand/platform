@@ -24,8 +24,7 @@ export const COMPONENTS = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule, MaterialModule],
-  declarations: COMPONENTS,
+  imports: [CommonModule, RouterModule, MaterialModule, ...COMPONENTS],
   exports: COMPONENTS,
 })
 export class CoreModule {}

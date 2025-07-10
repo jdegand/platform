@@ -44,7 +44,6 @@ export const CONTAINERS = [
     CommonModule,
     MaterialModule,
     BooksRoutingModule,
-
     /**
      * StoreModule.forFeature is used for composing state
      * from feature modules. These modules can be loaded
@@ -52,7 +51,6 @@ export const CONTAINERS = [
      * the existing state.
      */
     StoreModule.forFeature(fromBooks.booksFeatureKey, fromBooks.reducers),
-
     /**
      * Effects.forFeature is used to register effects
      * from feature modules. Effects can be loaded
@@ -63,7 +61,8 @@ export const CONTAINERS = [
      */
     EffectsModule.forFeature(BookEffects, CollectionEffects),
     PipesModule,
+    COMPONENTS,
+    CONTAINERS,
   ],
-  declarations: [COMPONENTS, CONTAINERS],
 })
 export class BooksModule {}

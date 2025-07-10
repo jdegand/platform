@@ -31,7 +31,7 @@ export const COMPONENTS = [
       reducer: fromAuth.reducers,
     }),
     EffectsModule.forFeature(AuthEffects),
+    ...COMPONENTS,
   ],
-  declarations: COMPONENTS,
 })
 export class AuthModule {}

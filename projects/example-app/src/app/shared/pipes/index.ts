@@ -6,7 +6,7 @@ import { EllipsisPipe } from '@example-app/shared/pipes/ellipsis.pipe';
 export const PIPES = [AddCommasPipe, EllipsisPipe];
 
 @NgModule({
-  declarations: PIPES,
+  imports: [...PIPES],
   exports: PIPES,
 })
 export class PipesModule {}
