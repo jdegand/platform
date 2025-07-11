@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Credentials } from '@example-app/auth/models';
 import * as fromAuth from '@example-app/auth/reducers';
@@ -23,10 +23,11 @@ export class LoginPageComponent {
 
   protected readonly pending = this.store.selectSignal(
     fromAuth.selectLoginPagePending
-  );
+  ) as Signal<boolean>;
+
   protected readonly error = this.store.selectSignal(
     fromAuth.selectLoginPageError
-  );
+  ) as Signal<string | null>;
 
   onSubmit(credentials: Credentials) {
     this.store.dispatch(LoginPageActions.login({ credentials }));

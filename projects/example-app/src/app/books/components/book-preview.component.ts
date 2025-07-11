@@ -1,13 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { BookAuthorsComponent } from './book-authors.component';
+import { Book } from '@example-app/books/models';
 import { MaterialModule } from '@example-app/material';
 import { EllipsisPipe } from '@example-app/shared/pipes/ellipsis.pipe';
-import { Book } from '../models';
+import { BookAuthorsComponent } from './book-authors.component';
 
 @Component({
-  standalone: true,
   selector: 'bc-book-preview',
   imports: [MaterialModule, RouterLink, EllipsisPipe, BookAuthorsComponent],
   template: `
@@ -30,7 +29,9 @@ import { Book } from '../models';
           }
         </mat-card-content>
         <mat-card-footer>
+          @if(book){
           <bc-book-authors [book]="book"></bc-book-authors>
+          }
         </mat-card-footer>
       </mat-card>
     </a>
