@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ViewBookPageActions } from '@example-app/books/actions/view-book-page.actions';
+import { SelectedBookPageComponent } from './selected-book-page.component';
 
 /**
  * Note: Container components are also reusable. Whether or not
@@ -17,10 +18,11 @@ import { ViewBookPageActions } from '@example-app/books/actions/view-book-page.a
  * SelectedBookPageComponent
  */
 @Component({
+  standalone: true,
   selector: 'bc-view-book-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [SelectedBookPageComponent],
   template: ` <bc-selected-book-page></bc-selected-book-page> `,
-  standalone: false,
 })
 export class ViewBookPageComponent implements OnDestroy {
   actionsSubscription: Subscription;

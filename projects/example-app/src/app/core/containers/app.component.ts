@@ -6,10 +6,29 @@ import { AuthActions } from '@example-app/auth/actions/auth.actions';
 import * as fromAuth from '@example-app/auth/reducers';
 import * as fromRoot from '@example-app/reducers';
 import { LayoutActions } from '@example-app/core/actions/layout.actions';
+import {
+  LayoutComponent,
+  NavItemComponent,
+  SidenavComponent,
+  ToolbarComponent,
+} from '../components';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { AsyncPipe, NgIf } from '@angular/common';
 
 @Component({
+  standalone: true,
   selector: 'bc-app',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    RouterOutlet,
+    NgIf,
+    AsyncPipe,
+    RouterLink,
+    LayoutComponent,
+    SidenavComponent,
+    NavItemComponent,
+    ToolbarComponent,
+  ],
   template: `
     <bc-layout>
       <bc-sidenav [open]="(showSidenav$ | async)!" (closeMenu)="closeSidenav()">
@@ -46,7 +65,6 @@ import { LayoutActions } from '@example-app/core/actions/layout.actions';
       <router-outlet></router-outlet>
     </bc-layout>
   `,
-  standalone: false,
 })
 export class AppComponent {
   showSidenav$: Observable<boolean>;

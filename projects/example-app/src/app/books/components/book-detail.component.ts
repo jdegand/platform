@@ -1,9 +1,14 @@
+import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { Book } from '@example-app/books/models';
+import { MaterialModule } from '@example-app/material';
+import { BookAuthorsComponent } from './book-authors.component';
 
 @Component({
+  standalone: true,
   selector: 'bc-book-detail',
+  imports: [MaterialModule, NgIf, BookAuthorsComponent],
   template: `
     <mat-card *ngIf="book">
       <mat-card-title-group>
@@ -67,7 +72,6 @@ import { Book } from '@example-app/books/models';
       }
     `,
   ],
-  standalone: false,
 })
 export class BookDetailComponent {
   /**

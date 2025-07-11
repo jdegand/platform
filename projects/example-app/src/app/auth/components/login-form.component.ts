@@ -1,9 +1,13 @@
+import { NgIf } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Credentials } from '@example-app/auth/models';
+import { MaterialModule } from '@example-app/material';
 
 @Component({
+  standalone: true,
   selector: 'bc-login-form',
+  imports: [MaterialModule, ReactiveFormsModule, NgIf],
   template: `
     <mat-card>
       <mat-card-title>Login</mat-card-title>
@@ -78,7 +82,6 @@ import { Credentials } from '@example-app/auth/models';
       }
     `,
   ],
-  standalone: false,
 })
 export class LoginFormComponent {
   @Input()

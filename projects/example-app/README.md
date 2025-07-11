@@ -30,10 +30,10 @@ git clone https://github.com/ngrx/platform.git
 cd platform
 
 # Install the dependencies
-pnpm install
+yarn
 
 # Start the server
-pnpm exec nx serve example-app
+yarn nx serve example-app
 ```
 
 Navigate to [http://localhost:4200/](http://localhost:4200/) in your browser. To log in, the username and password is `test`.

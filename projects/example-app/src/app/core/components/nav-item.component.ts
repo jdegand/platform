@@ -1,7 +1,12 @@
+import { NgIf } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { MaterialModule } from '@example-app/material';
 
 @Component({
+  standalone: true,
   selector: 'bc-nav-item',
+  imports: [MaterialModule, RouterLink, NgIf],
   template: `
     <a mat-list-item [routerLink]="routerLink" (click)="navigate.emit()">
       <mat-icon matListItemIcon>{{ icon }}</mat-icon>
@@ -16,7 +21,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
       }
     `,
   ],
-  standalone: false,
 })
 export class NavItemComponent {
   @Input() icon = '';

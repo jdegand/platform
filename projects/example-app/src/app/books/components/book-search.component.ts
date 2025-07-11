@@ -1,7 +1,11 @@
+import { NgIf } from '@angular/common';
 import { Component, Output, Input, EventEmitter } from '@angular/core';
+import { MaterialModule } from '@example-app/material';
 
 @Component({
+  standalone: true,
   selector: 'bc-book-search',
+  imports: [MaterialModule, NgIf],
   template: `
     <mat-card>
       <mat-card-title>Find a Book</mat-card-title>
@@ -60,15 +64,14 @@ import { Component, Output, Input, EventEmitter } from '@angular/core';
       }
     `,
   ],
-  standalone: false,
 })
 export class BookSearchComponent {
   @Input() query = '';
   @Input() searching = false;
   @Input() error = '';
-  @Output() searchBooks = new EventEmitter<string>();
+  @Output() search = new EventEmitter<string>();
 
   onSearch(event: KeyboardEvent): void {
-    this.searchBooks.emit((event.target as HTMLInputElement).value);
+    this.search.emit((event.target as HTMLInputElement).value);
   }
 }

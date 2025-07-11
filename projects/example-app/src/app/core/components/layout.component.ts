@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
+import { MaterialModule } from '@example-app/material';
 
 @Component({
+  standalone: true,
   selector: 'bc-layout',
+  imports: [MaterialModule],
   template: `
     <mat-sidenav-container fullscreen>
       <ng-content></ng-content>
@@ -14,6 +17,5 @@ import { Component } from '@angular/core';
       }
     `,
   ],
-  standalone: false,
 })
 export class LayoutComponent {}
