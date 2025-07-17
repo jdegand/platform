@@ -1,3 +1,4 @@
+// @ts-check
 import { FlatCompat } from '@eslint/eslintrc';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -6,14 +7,18 @@ import nxEslintPlugin from '@nx/eslint-plugin';
 
 const compat = new FlatCompat({
   baseDirectory: dirname(fileURLToPath(import.meta.url)),
-  recommendedConfig: js.configs.recommended,
 });
 
 export default [
+  js.configs.recommended,
   {
     ignores: ['**/dist'],
   },
-  { plugins: { '@nx': nxEslintPlugin } },
+  {
+    plugins: {
+      '@nx': nxEslintPlugin,
+    },
+  },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {
