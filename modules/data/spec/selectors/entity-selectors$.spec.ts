@@ -82,7 +82,7 @@ describe('EntitySelectors$', () => {
 
       // EntitySelectors
       collectionCreator = {
-        create: jasmine.createSpy('create'),
+        create: jest.fn().mockName('create'),
       };
       collectionCreator.create.and.returnValue(emptyHeroCollection);
       const entitySelectorsFactory = new EntitySelectorsFactory(

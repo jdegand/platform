@@ -74,9 +74,9 @@ describe('EntityCollectionReducer', () => {
       collectionReducerMethodsFactory
     );
     logger = {
-      error: jasmine.createSpy('error'),
-      log: jasmine.createSpy('log'),
-      warn: jasmine.createSpy('warn'),
+      error: jest.fn().mockName('error'),
+      log: jest.fn().mockName('log'),
+      warn: jest.fn().mockName('warn'),
     };
 
     entityReducerRegistry = new EntityCollectionReducerRegistry(

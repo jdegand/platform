@@ -20,14 +20,14 @@ describe('Effects Error Handler', () => {
         {
           provide: Store,
           useValue: {
-            next: jasmine.createSpy('storeNext'),
-            dispatch: jasmine.createSpy('dispatch'),
+            next: jest.fn().mockName('storeNext'),
+            dispatch: jest.fn().mockName('dispatch'),
           },
         },
         {
           provide: ErrorHandler,
           useValue: {
-            handleError: jasmine.createSpy('globalErrorHandler'),
+            handleError: jest.fn().mockName('globalErrorHandler'),
           },
         },
         ...providers,

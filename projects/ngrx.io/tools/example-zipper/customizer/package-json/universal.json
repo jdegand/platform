@@ -27,9 +27,7 @@
   "devDependencies": [
     "@angular-devkit/build-angular",
     "@angular/cli",
-    "@types/jasminewd2",
-    "jasmine-spec-reporter",
-    "karma-coverage-istanbul-reporter",
+    "jest",
     "ts-loader",
     "ts-node",
     "webpack-cli"

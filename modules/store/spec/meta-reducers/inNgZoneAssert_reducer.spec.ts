@@ -21,7 +21,7 @@ describe('inNgZoneAssertMetaReducer:', () => {
   });
 
   it('should not call isInAngularZone when check is off', () => {
-    ngCore.NgZone.isInAngularZone = jasmine.createSpy('isInAngularZone');
+    ngCore.NgZone.isInAngularZone = jest.fn().mockName('isInAngularZone');
     expect(() =>
       invokeActionReducer((state: any) => state, false)
     ).not.toThrow();

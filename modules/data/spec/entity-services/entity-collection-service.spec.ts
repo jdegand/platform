@@ -158,7 +158,9 @@ describe('EntityCollectionService', () => {
       const hero2 = { id: 2, name: 'B' } as Hero;
       const heroes = [hero1, hero2];
       dataService.setResponse('getWithQuery', heroes);
-      heroCollectionService.loadWithQuery({name: 'foo'}).subscribe(expectDataToBe(heroes, done));
+      heroCollectionService
+        .loadWithQuery({ name: 'foo' })
+        .subscribe(expectDataToBe(heroes, done));
     });
 
     it('loadWithQuery observable should emit expected error when data service fails', (done: any) => {
@@ -166,7 +168,7 @@ describe('EntityCollectionService', () => {
       const error = makeDataServiceError('GET', httpError);
       dataService.setErrorResponse('getWithQuery', error);
       heroCollectionService
-        .loadWithQuery({name: 'foo'})
+        .loadWithQuery({ name: 'foo' })
         .subscribe(expectErrorToBe(error, done));
     });
   });
@@ -468,9 +470,9 @@ const entityMetadata: EntityMetadataMap = {
 
 function entityServicesSetup() {
   const logger = {
-    error: jasmine.createSpy('error'),
-    log: jasmine.createSpy('log'),
-    warn: jasmine.createSpy('warn'),
+    error: jest.fn().mockName('error'),
+    log: jest.fn().mockName('log'),
+    warn: jest.fn().mockName('warn'),
   };
 
   TestBed.configureTestingModule({
@@ -614,12 +616,12 @@ export interface TestDataServiceMethod {
 }
 
 export class TestDataService {
-  add = jasmine.createSpy('add');
-  delete = jasmine.createSpy('delete');
-  getAll = jasmine.createSpy('getAll');
-  getById = jasmine.createSpy('getById');
-  getWithQuery = jasmine.createSpy('getWithQuery');
-  update = jasmine.createSpy('update');
+  add = jest.fn().mockName('add');
+  delete = jest.fn().mockName('delete');
+  getAll = jest.fn().mockName('getAll');
+  getById = jest.fn().mockName('getById');
+  getWithQuery = jest.fn().mockName('getWithQuery');
+  update = jest.fn().mockName('update');
 
   getService(): TestDataServiceMethod {
     return this;

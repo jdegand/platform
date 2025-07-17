@@ -16,7 +16,7 @@ describe('extractDecoratedClasses processor', function() {
   });
 
   it('should call copyFolder with each mapping', () => {
-    const mockCopyFolder = jasmine.createSpy();
+    const mockCopyFolder = jest.fn().mockName();
     processor = factory(mockCopyFolder);
     processor.assetMappings.push({ from: 'a/b/c', to: 'x/y/z' });
     processor.assetMappings.push({ from: '1/2/3', to: '4/5/6' });

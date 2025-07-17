@@ -29,7 +29,7 @@ describe('EntitySelectors', () => {
 
   beforeEach(() => {
     collectionCreator = {
-      create: jasmine.createSpy('create'),
+      create: jest.fn().mockName('create'),
     };
     entitySelectorsFactory = new EntitySelectorsFactory(collectionCreator);
   });

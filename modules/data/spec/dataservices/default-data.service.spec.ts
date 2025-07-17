@@ -629,10 +629,10 @@ describe('DefaultDataServiceFactory', () => {
       },
     });
     http = {
-      get: jasmine.createSpy('get'),
-      delete: jasmine.createSpy('delete'),
-      post: jasmine.createSpy('post'),
-      put: jasmine.createSpy('put'),
+      get: jest.fn().mockName('get'),
+      delete: jest.fn().mockName('delete'),
+      post: jest.fn().mockName('post'),
+      put: jest.fn().mockName('put'),
     };
     http.get.and.returnValue(of([]));
   });

@@ -84,16 +84,16 @@ function createState(
 
 const testSetup = (options: { config: StoreDevtoolsConfig }) => {
   const reduxDevtoolsExtension = {
-    send: jasmine.createSpy('send'),
-    connect: jasmine.createSpy('connect'),
+    send: jest.fn().mockName('send'),
+    connect: jest.fn().mockName('connect'),
   };
 
   const extensionConnection = {
-    init: jasmine.createSpy('init'),
-    subscribe: jasmine.createSpy('subscribe'),
-    unsubscribe: jasmine.createSpy('unsubscribe'),
-    send: jasmine.createSpy('send'),
-    error: jasmine.createSpy('error'),
+    init: jest.fn().mockName('init'),
+    subscribe: jest.fn().mockName('subscribe'),
+    unsubscribe: jest.fn().mockName('unsubscribe'),
+    send: jest.fn().mockName('send'),
+    error: jest.fn().mockName('error'),
   };
 
   (reduxDevtoolsExtension.connect as jasmine.Spy).and.returnValue(

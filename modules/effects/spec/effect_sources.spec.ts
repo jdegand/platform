@@ -43,7 +43,7 @@ describe('EffectSources', () => {
         {
           provide: Store,
           useValue: {
-            dispatch: jasmine.createSpy('dispatch'),
+            dispatch: jest.fn().mockName('dispatch'),
           },
         },
       ],

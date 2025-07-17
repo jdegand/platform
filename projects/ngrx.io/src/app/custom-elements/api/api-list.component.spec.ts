@@ -230,7 +230,7 @@ describe('ApiListComponent', () => {
 
 class TestLocationService {
     query: { [index: string]: string } = {};
-    setSearch = jasmine.createSpy('setSearch');
+    setSearch = jest.fn().mockName('setSearch');
     search() {
         return this.query;
     }

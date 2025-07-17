@@ -19,7 +19,6 @@ export default {
     'jest-preset-angular/build/serializers/ng-snapshot',
     'jest-preset-angular/build/serializers/html-comment',
   ],
-  testRunner: 'jest-jasmine2',
   moduleNameMapper: {
     '^rxjs(/operators$)?$':
       '<rootDir>../../node_modules/rxjs/dist/bundles/rxjs.umd.js',

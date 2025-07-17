@@ -45,9 +45,9 @@ describe('EntityEffects (normal testing)', () => {
 
   beforeEach(() => {
     logger = {
-      error: jasmine.createSpy('error'),
-      log: jasmine.createSpy('log'),
-      warn: jasmine.createSpy('warn'),
+      error: jest.fn().mockName('error'),
+      log: jest.fn().mockName('log'),
+      warn: jest.fn().mockName('warn'),
     };
     actions$ = new ReplaySubject<Action>(1);
 
@@ -535,13 +535,13 @@ export interface TestDataServiceMethod {
   upsert: jasmine.Spy;
 }
 export class TestDataService {
-  add = jasmine.createSpy('add');
-  delete = jasmine.createSpy('delete');
-  getAll = jasmine.createSpy('getAll');
-  getById = jasmine.createSpy('getById');
-  getWithQuery = jasmine.createSpy('getWithQuery');
-  update = jasmine.createSpy('update');
-  upsert = jasmine.createSpy('upsert');
+  add = jest.fn().mockName('add');
+  delete = jest.fn().mockName('delete');
+  getAll = jest.fn().mockName('getAll');
+  getById = jest.fn().mockName('getById');
+  getWithQuery = jest.fn().mockName('getWithQuery');
+  update = jest.fn().mockName('update');
+  upsert = jest.fn().mockName('upsert');
 
   getService(): TestDataServiceMethod {
     return this;

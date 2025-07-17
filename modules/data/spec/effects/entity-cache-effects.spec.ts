@@ -49,9 +49,9 @@ describe('EntityCacheEffects (normal testing)', () => {
     actions$ = new ReplaySubject<Action>(1);
     correlationId = 'CORID42';
     logger = {
-      error: jasmine.createSpy('error'),
-      log: jasmine.createSpy('log'),
-      warn: jasmine.createSpy('warn'),
+      error: jest.fn().mockName('error'),
+      log: jest.fn().mockName('log'),
+      warn: jest.fn().mockName('warn'),
     };
     mergeStrategy = undefined;
     options = { correlationId, mergeStrategy };

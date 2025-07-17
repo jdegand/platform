@@ -5,7 +5,7 @@ describe('link inline-tag-def', function() {
   let injector, tag, getLinkInfo, log;
 
   beforeEach(() => {
-    getLinkInfo = jasmine.createSpy('getLinkInfo');
+    getLinkInfo = jest.fn().mockName('getLinkInfo');
     const testPackage = testPackageFactory('links-package', true)
       .factory('getLinkInfo', function() { return getLinkInfo; });
     getLinkInfo.disambiguators = [];

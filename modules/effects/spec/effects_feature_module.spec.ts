@@ -29,7 +29,7 @@ describe('Effects Feature Module', () => {
           {
             provide: EffectsRootModule,
             useValue: {
-              addEffects: jasmine.createSpy('addEffects'),
+              addEffects: jest.fn().mockName('addEffects'),
             },
           },
           {

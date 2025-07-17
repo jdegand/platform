@@ -447,7 +447,7 @@ describe('ngRx Store', () => {
       return {
         key,
         reducers: {},
-        reducerFactory: jasmine.createSpy(`reducerFactory_${key}`),
+        reducerFactory: jest.fn().mockName(`reducerFactory_${key}`),
       };
     }
   });

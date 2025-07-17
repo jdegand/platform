@@ -85,18 +85,15 @@ class ExampleZipper {
     let defaultIncludes = ['**/*.ts', '**/*.js', '**/*.es6', '**/*.css', '**/*.html', '**/*.md', '**/*.json', '**/*.png'];
     let alwaysIncludes = [
       'bs-config.json',
-      'e2e/protractor.conf.js',
       'angular.json',
       '.editorconfig',
       '.gitignore',
       'tslint.json',
-      'karma-test-shim.js',
       'tsconfig.json',
       'src/testing/**/*',
       'src/.babelrc',
       'src/.browserslistrc',
       'src/favicon.ico',
-      'src/karma.conf.js',
       'src/polyfills.ts',
       'src/test.ts',
       'src/typings.d.ts',
@@ -104,7 +101,7 @@ class ExampleZipper {
       'src/tsconfig.*',
       'src/tslint.*'
     ];
-    var alwaysExcludes = [
+     let alwaysExcludes = [
       '!**/bs-config.e2e.json',
       '!**/*stackblitz.*',
       '!**/*zipper.*',
