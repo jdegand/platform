@@ -11,7 +11,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Ensure public folder exists
+        run: mkdir -p projects/www/public
+
       - name: Install merge-markdown
         run: npm install -g @knennigtri/merge-markdown
+
       - name: Merge files
-        run: merge-markdown -i projects/www/src/app/pages/guide/*.md -o projects/www/public/llms-full.txt
+        run: merge-markdown -i projects/www/src/app/pages/guide/**/*.md -o projects/www/public/llms-full.txt
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Commit merged file
+        run: |
+          git add projects/www/public/llms-full.txt
+          git commit -m "Update merged Markdown file [skip ci]" || echo "No changes to commit"
+
+      - name: Push changes
+        run: git push origin llms-workflow
