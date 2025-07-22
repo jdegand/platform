@@ -1,0 +1,17 @@
+name: Merge Markdown Files
+
+on:
+  push:
+    branches: [llms-workflow]
+    paths:
+      - 'projects/www/src/app/pages/guide/*.md'
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install merge-markdown
+        run: npm install -g @knennigtri/merge-markdown
+      - name: Merge files
+        run: merge-markdown -i projects/www/src/app/pages/guide/*.md -o projects/www/public/llms-full.txt
