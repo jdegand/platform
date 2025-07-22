@@ -1,4 +1,4 @@
-# Component Installation
+# Installation
 
 ## Installing with `ng add`
 
