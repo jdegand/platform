@@ -4,7 +4,7 @@ on:
   push:
     branches: [llms-workflow]
     paths:
-      - 'projects/www/src/app/pages/guide/*.md'
+      - 'projects/www/src/app/pages/guide/**/*.md'
 
 jobs:
   merge:
