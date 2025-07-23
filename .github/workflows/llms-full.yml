@@ -12,14 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Ensure public folder exists
-        run: mkdir -p projects/www/public
-
       - name: Install merge-markdown
         run: npm install -g @knennigtri/merge-markdown
 
       - name: Merge files
         run: merge-markdown -c -i projects/www/src/app/pages/guide/**/*.md -o projects/www/public/llms-full.txt
+
+      - name: Confirm merged file exists
+        run: ls -l projects/www/public/llms-full.txt
 
       - name: Configure Git
         run: |
