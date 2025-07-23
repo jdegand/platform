@@ -19,7 +19,7 @@ jobs:
         run: npm install -g @knennigtri/merge-markdown
 
       - name: Merge files
-        run: merge-markdown -i projects/www/src/app/pages/guide/**/*.md -o ./projects/www/public/llms-full.txt
+        run: merge-markdown -c -i projects/www/src/app/pages/guide/**/*.md -o projects/www/public/llms-full.txt
 
       - name: Configure Git
         run: |
