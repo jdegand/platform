@@ -4,7 +4,7 @@ on:
   push:
     branches: [llms-workflow]
     paths:
-      - './projects/www/src/app/pages/guide/**/*.md'
+      - 'projects/www/src/app/pages/guide/**/*.md'
 
 jobs:
   merge:
@@ -13,13 +13,13 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Ensure public folder exists
-        run: mkdir -p ./projects/www/public
+        run: mkdir -p projects/www/public
 
       - name: Install merge-markdown
         run: npm install -g @knennigtri/merge-markdown
 
       - name: Merge files
-        run: merge-markdown -i ./projects/www/src/app/pages/guide/**/*.md -o ./projects/www/public/llms-full.txt
+        run: merge-markdown -i projects/www/src/app/pages/guide/**/*.md -o ./projects/www/public/llms-full.txt
 
       - name: Configure Git
         run: |
