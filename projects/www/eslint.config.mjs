@@ -31,7 +31,7 @@ export default [
           'error',
           {
             type: 'attribute',
-            prefix: 'bc',
+            prefix: 'ngrx',
             style: 'camelCase',
           },
         ],
@@ -39,7 +39,7 @@ export default [
           'error',
           {
             type: 'element',
-            prefix: 'bc',
+            prefix: 'ngrx',
             style: 'kebab-case',
           },
         ],

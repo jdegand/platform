@@ -9,17 +9,9 @@ import { StackblitzComponent } from './components/docs/stackblitz.component';
 import { FooterComponent } from './components/footer.component';
 
 @Component({
-  selector: 'www-root',
+  selector: 'ngrx-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    MenuComponent,
-    MarkdownSymbolLinkComponent,
-    AlertComponent,
-    CodeExampleComponent,
-    StackblitzComponent,
-    FooterComponent,
-  ],
+  imports: [RouterOutlet, MenuComponent, FooterComponent],
   template: `
     <ngrx-menu></ngrx-menu>
     <router-outlet></router-outlet>
