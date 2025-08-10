@@ -1,42 +1,37 @@
 import { FlatCompat } from '@eslint/eslintrc';
-import { dirname, resolve } from 'path';
+import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import js from '@eslint/js';
+import baseConfig from '../../eslint.config.mjs';
 
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
+  baseDirectory: dirname(fileURLToPath(import.meta.url)),
+  recommendedConfig: js.configs.recommended,
 });
 
 export default [
   {
-    ignores: ['**/dist/**', '**/node_modules/**'],
+    ignores: ['**/dist'],
   },
-
-  // TypeScript override with parserOptions
+  ...baseConfig,
   ...compat
     .config({
       extends: [
         'plugin:@nx/angular',
         'plugin:@angular-eslint/template/process-inline-templates',
       ],
+      plugins: ['@typescript-eslint'],
     })
     .map((config) => ({
       ...config,
-      files: ['projects/www/**/*.ts'],
-      languageOptions: {
-        parserOptions: {
-          project: resolve(__dirname, 'projects/www/tsconfig.app.json'),
-          tsconfigRootDir: __dirname,
-        },
-      },
+      files: ['**/*.ts'],
       rules: {
         ...config.rules,
         '@angular-eslint/directive-selector': [
           'error',
           {
             type: 'attribute',
-            prefix: 'Www',
+            prefix: 'bc',
             style: 'camelCase',
           },
         ],
@@ -44,23 +39,51 @@ export default [
           'error',
           {
             type: 'element',
-            prefix: 'www',
+            prefix: 'bc',
             style: 'kebab-case',
           },
         ],
+        '@typescript-eslint/prefer-namespace-keyword': 'error',
+        '@nx/enforce-module-boundaries': 'off',
+        eqeqeq: ['off', 'smart'],
+        'id-blacklist': [
+          'error',
+          'any',
+          'Number',
+          'number',
+          'String',
+          'string',
+          'Boolean',
+          'boolean',
+          'Undefined',
+          'undefined',
+        ],
+        'id-match': 'error',
+        'no-eval': 'off',
+        'no-redeclare': 'error',
+        'no-underscore-dangle': 'error',
+        'no-var': 'error',
+        'no-case-declarations': 'off',
+        '@angular-eslint/prefer-standalone': 'off',
+      },
+      languageOptions: {
+        parserOptions: {
+          project: ['projects/www/tsconfig.*.json'],
+        },
       },
     })),
-
-  // HTML override
   ...compat
     .config({
       extends: ['plugin:@nx/angular-template'],
     })
     .map((config) => ({
       ...config,
-      files: ['projects/www/**/*.html'],
+      files: ['**/*.html'],
       rules: {
         ...config.rules,
       },
     })),
+  {
+    ignores: ['**/environment.prod.ts'],
+  },
 ];
