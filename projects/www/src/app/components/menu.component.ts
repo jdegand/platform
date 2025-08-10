@@ -15,7 +15,6 @@ import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'ngrx-menu',
-  standalone: true,
   imports: [MatIconModule, RouterLink, RouterLinkActive, GuideSectionComponent],
   template: `
     <div class="mobile-nav-bar">

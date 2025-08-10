@@ -3,7 +3,6 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'ngrx-footer',
-  standalone: true,
   imports: [RouterLink],
   template: `
     <div class="logo-and-copyright">

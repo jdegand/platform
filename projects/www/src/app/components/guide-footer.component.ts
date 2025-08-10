@@ -5,7 +5,6 @@ import { FlattenedLink } from '../services/guide-menu.service';
 
 @Component({
   selector: 'ngrx-guide-footer',
-  standalone: true,
   imports: [RouterLink, MatIcon],
   template: `
     <div class="linkWrapper previous">

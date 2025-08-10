@@ -364,7 +364,7 @@ function writeFinalizedApiReport() {
 
   for (const packageName of report.packageNames) {
     const packageReport = report.packages[packageName];
-    const [ngrx, ...packagePath] = packageName.split('/');
+    const [_ngrx, ...packagePath] = packageName.split('/');
 
     for (const symbolName of packageReport.symbolNames) {
       const symbol = packageReport.symbols[symbolName];

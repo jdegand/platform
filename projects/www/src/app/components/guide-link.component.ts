@@ -3,7 +3,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'ngrx-guide-menu-link',
-  standalone: true,
   imports: [RouterLink, RouterLinkActive],
   template: `
     <a

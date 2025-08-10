@@ -33,7 +33,6 @@ const COLOR_PAIRS: ColorPairs = [
 
 @Component({
   selector: 'ngrx-banner-animation',
-  standalone: true,
   template: `
     <svg
       #svg

@@ -12,7 +12,6 @@ import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'ngrx-reference-symbol-page',
-  standalone: true,
   template: `
     @if (resolvedSymbol(); as summary) {
     <ngrx-symbol [summary]="summary" />

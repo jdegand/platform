@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'ngrx-home-page',
-  standalone: true,
   imports: [
     BannerAnimationComponent,
     MatButtonModule,

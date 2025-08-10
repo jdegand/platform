@@ -8,7 +8,6 @@ import { MinimizedApiMemberSummary } from '@ngrx-io/shared';
 
 @Component({
   selector: 'ngrx-reference-index-page',
-  standalone: true,
   imports: [
     SymbolChipComponent,
     MatFormField,

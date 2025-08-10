@@ -9,7 +9,6 @@ import { Section } from '../services/guide-menu.service';
 
 @Component({
   selector: 'ngrx-guide-section',
-  standalone: true,
   imports: [GuideMenuLinkComponent, MatIcon],
   template: `
     <section>
