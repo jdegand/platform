@@ -172,26 +172,32 @@ function getSuggestedName(name: string): string {
 
   const selectWord = 'select';
 
-  let possibleReplacedName = name.replace(
-    new RegExp(`^${selectWord}(.+)`),
-    (_, word: string) => `${selectWord}${capitalize(word)}`
-  );
+  // Case 1: Already starts with "select" but not properly capitalized
+  if (name.startsWith(selectWord)) {
+    const rest = name.slice(selectWord.length);
+    if (rest.length === 0) {
+      return 'selectSelect';
+    }
 
-  if (name !== possibleReplacedName) {
-    return possibleReplacedName;
+    // Preserve casing for snake_case or ALL_CAPS
+    if (/^[A-Z_]+$/.test(rest)) {
+      return `${selectWord}${rest}`;
+    }
+
+    return `${selectWord}${capitalize(rest)}`;
   }
 
-  possibleReplacedName = name.replace(/^get([^a-z].+)/, (_, word: string) => {
-    return `${selectWord}${capitalize(word)}`;
-  });
-
-  if (name !== possibleReplacedName) {
-    return possibleReplacedName;
+  // Case 2: Starts with "get"
+  if (/^get([^a-z].+)/.test(name)) {
+    const rest = name.slice(3);
+    return `${selectWord}${capitalize(rest)}`;
   }
 
+  // Case 3: ALL_CAPS or snake_case
   if (/^[A-Z_]+$/.test(name)) {
-    return `${selectWord}${capitalize(name.toLowerCase())}`;
+    return `${selectWord}${name}`;
   }
 
+  // Case 4: generic or camelCase
   return `${selectWord}${capitalize(name)}`;
 }
