@@ -32,7 +32,12 @@ export default createRule<Options, MessageIds>({
   defaultOptions: [],
   create: (context) => {
     function reportIfInvalid(name: string, node: TSESTree.Identifier) {
-      if (!name.startsWith('select')) {
+      const isValid =
+        name.startsWith('select') &&
+        name.length > 'select'.length &&
+        /^[A-Z_\$]/.test(name.slice('select'.length));
+
+      if (!isValid) {
         const suggestedName = getSuggestedName(name);
         context.report({
           node,
@@ -58,10 +63,7 @@ export default createRule<Options, MessageIds>({
                   parent.id.type === 'Identifier'
                 ) {
                   const fullText = sourceCode.getText(parent.id);
-                  const updatedText = fullText.replace(
-                    node.name,
-                    suggestedName
-                  );
+                  const updatedText = fullText.replace(name, suggestedName);
                   return fixer.replaceText(parent.id, updatedText);
                 }
 
@@ -70,6 +72,41 @@ export default createRule<Options, MessageIds>({
             },
           ],
         });
+      }
+    }
+
+    function isSelectorFactoryCall(node: TSESTree.CallExpression): boolean {
+      const callee = node.callee;
+      return (
+        callee.type === 'Identifier' &&
+        [
+          'createSelector',
+          'createFeatureSelector',
+          'createSelectorFactory',
+        ].includes(callee.name)
+      );
+    }
+
+    function checkFunctionBody(
+      name: string,
+      node: TSESTree.Identifier,
+      body: TSESTree.BlockStatement | TSESTree.Expression
+    ) {
+      if (body.type === 'CallExpression' && isSelectorFactoryCall(body)) {
+        reportIfInvalid(name, node);
+      }
+
+      if (body.type === 'BlockStatement') {
+        for (const stmt of body.body) {
+          if (
+            stmt.type === 'ReturnStatement' &&
+            stmt.argument &&
+            stmt.argument.type === 'CallExpression' &&
+            isSelectorFactoryCall(stmt.argument)
+          ) {
+            reportIfInvalid(name, node);
+          }
+        }
       }
     }
 
@@ -91,18 +128,37 @@ export default createRule<Options, MessageIds>({
               reportIfInvalid(prop.value.name, prop.value);
             }
           }
-          return; // Early exit to prevent duplicate lint errors when handling ObjectPattern selectors
+          return;
         }
 
-        if (
-          id.type === 'Identifier' &&
-          id.typeAnnotation?.typeAnnotation.type === 'TSTypeReference' &&
-          id.typeAnnotation.typeAnnotation.typeName.type === 'Identifier' &&
-          /^MemoizedSelector(WithProps)?$/.test(
-            id.typeAnnotation.typeAnnotation.typeName.name
-          )
-        ) {
-          reportIfInvalid(id.name, id);
+        if (id.type === 'Identifier') {
+          const hasSelectorType =
+            node.id.typeAnnotation?.typeAnnotation.type === 'TSTypeReference' &&
+            node.id.typeAnnotation.typeAnnotation.typeName.type ===
+              'Identifier' &&
+            /^MemoizedSelector(WithProps)?$/.test(
+              node.id.typeAnnotation.typeAnnotation.typeName.name
+            );
+
+          const isSelectorCall =
+            init?.type === 'CallExpression' && isSelectorFactoryCall(init);
+
+          const isArrowFunction =
+            init?.type === 'ArrowFunctionExpression' &&
+            init.body &&
+            (init.body.type === 'CallExpression' ||
+              init.body.type === 'BlockStatement');
+
+          const isFunctionExpression =
+            init?.type === 'FunctionExpression' &&
+            init.body &&
+            init.body.type === 'BlockStatement';
+
+          if (hasSelectorType || isSelectorCall) {
+            reportIfInvalid(id.name, id);
+          } else if (isArrowFunction || isFunctionExpression) {
+            checkFunctionBody(id.name, id, init.body);
+          }
         }
       },
     };
@@ -116,7 +172,6 @@ function getSuggestedName(name: string): string {
 
   const selectWord = 'select';
 
-  // Case 1: Already starts with "select" isn't pascal-case
   let possibleReplacedName = name.replace(
     new RegExp(`^${selectWord}(.+)`),
     (_, word: string) => `${selectWord}${capitalize(word)}`
@@ -126,7 +181,6 @@ function getSuggestedName(name: string): string {
     return possibleReplacedName;
   }
 
-  // Case 2: Starts with "get"
   possibleReplacedName = name.replace(/^get([^a-z].+)/, (_, word: string) => {
     return `${selectWord}${capitalize(word)}`;
   });
@@ -135,6 +189,9 @@ function getSuggestedName(name: string): string {
     return possibleReplacedName;
   }
 
-  // Case 3: No prefix
+  if (/^[A-Z_]+$/.test(name)) {
+    return `${selectWord}${capitalize(name.toLowerCase())}`;
+  }
+
   return `${selectWord}${capitalize(name)}`;
 }
