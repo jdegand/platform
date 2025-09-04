@@ -1,9 +1,11 @@
 /// <reference types="vitest" />
 import analog from '@analogjs/platform';
+import angular from '@analogjs/vite-plugin-angular';
 import { defineConfig, splitVendorChunkPlugin } from 'vite';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import ngrxStackblitzPlugin from './src/tools/vite-ngrx-stackblits.plugin';
 import { ngrxTheme } from './src/shared/ngrx-shiki-theme';
+import { configDefaults } from 'vitest/config';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -26,6 +28,9 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
+      angular({
+        inlineStylesExtension: 'scss',
+      }),
       analog({
         static: true,
         content: {
@@ -51,6 +56,7 @@ export default defineConfig(({ mode }) => {
       setupFiles: ['src/test-setup.ts'],
       include: ['**/*.spec.ts'],
       reporters: ['default'],
+      exclude: [...configDefaults.exclude, 'src/app/examples/**'],
     },
     define: {
       'import.meta.vitest': mode !== 'production',
