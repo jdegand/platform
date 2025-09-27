@@ -1,44 +1,35 @@
-import { expecter } from 'ts-snippet';
-import { compilerOptions } from './utils';
+import { describe, test } from 'tstyche';
 
 describe('regression component-store', () => {
-  const expectSnippet = expecter(
-    (code) => `
-        import { ComponentStore } from '@ngrx/component-store';
-        import { of, EMPTY, Observable } from 'rxjs';
-        import { concatMap } from 'rxjs/operators';
+  test('https://github.com/ngrx/platform/issues/3482', () => {
+    console.log(`
+      import { ComponentStore } from '@ngrx/component-store';
+      import { of, EMPTY, Observable } from 'rxjs';
+      import { concatMap } from 'rxjs/operators';
 
-        ${code}
-      `,
-    compilerOptions()
-  );
+      interface SomeType {
+        name: string;
+        prop: string;
+      }
 
-  it('https://github.com/ngrx/platform/issues/3482', () => {
-    const effectTest = `
-        interface SomeType {
-          name: string;
-          prop: string;
+      export abstract class MyStore<
+        QueryVariables extends SomeType
+      > extends ComponentStore<any> {
+        protected abstract readonly query$: Observable<Omit<QueryVariables, 'name'>>;
+
+        readonly load = this.effect(
+          (origin$: Observable<Omit<QueryVariables, 'name'> | null>) => origin$
+        );
+
+        protected constructor() {
+          super();
         }
 
-        export abstract class MyStore<
-          QueryVariables extends SomeType
-        > extends ComponentStore<any> {
-          protected abstract readonly query$: Observable<Omit<QueryVariables, 'name'>>;
-
-          readonly load = this.effect(
-            (origin$: Observable<Omit<QueryVariables, 'name'> | null>) => origin$
-          );
-
-          protected constructor() {
-            super();
-          }
-
-          protected initializeLoad() {
-            // 👇 this should work
-            this.load(this.query$);
-          }
+        protected initializeLoad() {
+          // 👇 this should work
+          this.load(this.query$);
         }
-      `;
-    expectSnippet(effectTest).toSucceed();
+      }
+    `);
   });
 });
